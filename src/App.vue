@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import Lexer, { customExtract, customSplit } from './lib/Lexer';
+import Lexer from './lib/Lexer';
 
 const code = ref(`if = cond(Some Condition) {
   yes: down

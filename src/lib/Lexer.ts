@@ -1,5 +1,5 @@
 import { Direction } from "./Arrows";
-import { blockTypes } from "./Blocks";
+import { blockTypes, BlockType } from "./Blocks";
 // import isVarName from "is-var-name";
 
 const isValidVarName = (str = "") => {
@@ -121,20 +121,22 @@ const customExtract = (
   return result;
 };
 
-enum TokenType {
-  If,
-  Store,
-  Switch,
-  Node,
-  Gate,
-  Math,
-  Flag,
-  Goto,
-  Stop,
-  Start,
-  Reset,
-  Ui,
-}
+const addDefaultProps = (token: Token) => {
+  let newObj = token;
+  if (token.type == BlockType.Condition) {
+    newObj.props = {
+      yes: "down",
+      no: "right",
+      ...newObj.props,
+    };
+  } else {
+    newObj.props = {
+      dir: "down",
+      ...newObj.props,
+    };
+  }
+  return newObj;
+};
 
 enum State {
   ExpectingVariable = "ExpectingVariable", // if ...
@@ -175,7 +177,7 @@ type TokenProps = {
 };
 
 type Token = {
-  type: TokenType;
+  type: BlockType;
   text: string;
   props: TokenProps;
   name: string;
@@ -186,7 +188,7 @@ export default class Lexer {
   state: State = State.ExpectingVariable;
   tokens: Token[] = [];
   currentToken: {
-    type?: TokenType;
+    type?: BlockType;
     text?: string;
     props?: TokenProps;
     name?: string;
@@ -266,7 +268,7 @@ export default class Lexer {
         if (c.length != 1) this.throwError(ErrorType.ExpectedBlock, lineIndex);
         if (!blockTypes.includes(c[0].trim()))
           this.throwError(ErrorType.InvlaidBlockName, lineIndex);
-        this.currentToken.type = c[0].trim() as unknown as TokenType;
+        this.currentToken.type = c[0].trim() as unknown as BlockType;
 
         this.state = State.ExpectingText;
       }
@@ -280,10 +282,23 @@ export default class Lexer {
       }
 
       if (this.state == State.ExpectingProps) {
-        let c = customSplit(line, "{", "(", ")")
-          .map((str) => str.trim())
-          .filter((str) => str);
+        let c = customSplit(line, "{", "(", ")").map((str) => str.trim());
         if (c.length == 1) {
+          this.state = State.ExpectingVariable;
+          this.currentToken.props = {};
+          // @ts-ignore
+          this.currentToken = addDefaultProps(this.currentToken);
+          // @ts-ignore
+          this.currentToken && this.tokens.push(this.currentToken);
+          this.currentToken = {
+            type: undefined,
+            text: undefined,
+            props: undefined,
+            name: undefined,
+          };
+          continue;
+        }
+        if (c.length == 2 && c[1] == "") {
           this.state = State.ExpectingKeyValuePair;
           continue;
         } else {
@@ -294,10 +309,21 @@ export default class Lexer {
       if (this.state == State.ExpectingKeyValuePair) {
         if (line.trim() != "}") {
           // continue reading to next line for props
+          let c = line.split(":").map((j) => j.trim());
+          console.log(c);
+          if (!this.currentToken.props) {
+            this.currentToken.props = {
+              [c[0]]: c[1],
+            };
+          } else {
+            this.currentToken.props[c[0]] = c[1];
+          }
+
           continue;
         } else {
           this.state = State.ExpectingVariable;
-          this.currentToken.props = {};
+          // @ts-ignore
+          this.currentToken = addDefaultProps(this.currentToken);
           // @ts-ignore
           this.currentToken && this.tokens.push(this.currentToken);
           this.currentToken = {
