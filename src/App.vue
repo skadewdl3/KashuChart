@@ -1,38 +1,39 @@
 <script setup lang="ts">
-import { Chart } from "./lib/Chart";
+import { ref } from 'vue';
+import Lexer, { customExtract, customSplit } from './lib/Lexer';
 
-let chart = new Chart();
-let blocks = chart.blocks;
-// let arrows = chart.arrows;
-
-console.log(blocks);
-
-/*
-Syntax:
-
-[variable] = [block](text){
-  branch1: dir1
-  branch2: dir2
-  prop1: val1
-  prop2: val2
+const code = ref(`if = cond(Some Condition) {
+  yes: down
+  no: left
 }
 
-join {
-  [var1]->[var2]
-  [var2].yes->[var3]
-  
+st = start(Algorithm Starts) {
+   color: #ff0000
+   background: #00ff00 
+}`)
 
+const lexer = new Lexer()
+
+const convert = () => {
+  lexer.setCode(code.value)
+  console.log(lexer.lex())
+  // customExtract('if = cond(Some Condition)', '(', ')')
+  // console.log(customSplit('if\n(Hello\nWorld)\nhi', '\n', '(', ')'))
 }
-
-
-*/
-
 
 </script>
 
 <template>
 
-  <textarea class="text-4xl"></textarea>
+  <div class="hero w-screem min-h-screen bg-base-200">
+  <div class="hero-content text-center w-full h-full">
+    <div class="w-full flex items-center justify-between flex-col">
+      <h1 class="text-5xl my-8 font-bold">KashuChart</h1>
+      <textarea class=" w-full min-h-[20rem] text-xl textarea my-8 textarea-primary" v-model="code" placeholder="Code"></textarea>
+      <button @click="convert" class="btn my-8 btn-primary">Convert!</button>
+    </div>
+  </div>
+</div>
 </template>
 
 <style lang="stylus"></style>

@@ -33,8 +33,8 @@ if = if (Some Condition) {
 }
 
 st = start(Algorithm Starts) {
-   color: #ff0000
-   background: #00ff00 
+  color: #ff0000
+  background: #00ff00 
 }
 ```
 
