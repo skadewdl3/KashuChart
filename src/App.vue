@@ -7,10 +7,14 @@ const code = ref(`if = cond(Some Condition) {
   no: left
 }
 
-st = start(Algorithm Starts) {
-   color: #ff0000
-   background: #00ff00 
-}`)
+st = start(Algorithm Starts)
+
+ed = stop(ALgorithm Stops)
+
+join {
+  st->ed
+}
+`)
 
 const lexer = new Lexer()
 

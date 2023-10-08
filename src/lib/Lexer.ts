@@ -249,16 +249,22 @@ export default class Lexer {
       let skip = false;
 
       if (this.state == State.ExpectingVariable) {
+        if (line.trim() == "join {") {
+          this.state = State.ExpectingJoin;
+          continue;
+        }
+
         if (!line.includes("")) this.throwError(ErrorType.ExpectedAssignment);
         let temp = customSplit(line, "=");
         if (temp.length == 0)
           this.throwError(ErrorType.ExpectedVariableName, lineIndex);
         if (temp.length != 2)
           this.throwError(ErrorType.ExpectedAssignment, lineIndex);
-        if (!temp[0].trim() || !isValidVarName(temp[0].trim()))
+        let t = temp[0].trim();
+        if (!t || !isValidVarName(t))
           this.throwError(ErrorType.InvalidVariableName, lineIndex);
 
-        this.currentToken.name = temp[0];
+        this.currentToken.name = t;
         this.state = State.ExpectingBlock;
       }
 
@@ -335,6 +341,16 @@ export default class Lexer {
           console.log(this.currentToken);
           continue;
         }
+      }
+
+      if (this.state == State.ExpectingJoin) {
+        if (line.trim() == "}") {
+          console.log("Ending join");
+          break;
+        }
+        console.log("Joining");
+
+        continue;
       }
 
       lineIndex++;
