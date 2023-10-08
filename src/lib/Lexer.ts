@@ -350,26 +350,25 @@ export default class Lexer {
         let tks = [];
 
         s1.forEach((x) => {
-          if (x[x.length - 1] === "-") {
-            x = x.slice(0, -1);
+          let s3 = customExtract(x, "(", ")");
+          let name = "";
+          for (let i = 0; i < x.length; i++) {
+            if (x[i] == "(") break;
+            name += x[i] == "-" ? "" : x[i];
           }
-          if (x.includes("-")) {
-            let s3 = customExtract(x, "(", ")");
-            let name = x[0].concat(customExtract(x, x[0], "-")[0]);
-            tks.push({
-              name,
-              text: s3[0],
-            });
-          } else {
-            tks.push({
-              name: x,
-              text: null,
-            });
-          }
+          tks.push({
+            name,
+            text: s3[0],
+          });
 
-          console.log(tks);
+          // else {
+          //   tks.push({
+          //     name: x,
+          //     text: null,
+          //   });
+          // }
         });
-
+        console.log(tks);
         continue;
       }
 
