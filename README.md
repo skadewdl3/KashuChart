@@ -40,13 +40,22 @@ st = start(Algorithm Starts) {
 
 > Line breaks are significant!!! Syntax should be exactly as show above for any variable block.
 
-> Currently, I only plan to support hexademical codes for colors.
+> Currently, I only plan on supporting hexadecimal codes for colors.
+_____________________________________________
 
-_______________________________________
 
-#### Join syntax
+### Join block has a different syntax.
 
-Join block only has different syntax.
+Consider block1, block2, block3, block4 are some blocks. if3 is a conditional (if) block.
+
+```
+join {
+  block1 -> block2 -> if3.yes
+  if3.yes -(condition is true)-> block4
+  if3.no -(condition is false)-> block5
+}
+```
+
 1. block1->block2 is a connection from block1 to block2
 2. It will follow "dir" prop for block1
 
@@ -54,9 +63,8 @@ Join block only has different syntax.
 
 4. Can add text onto arrows using the -(Some Text)-> syntax. So, in the above example, "condition is true" will be show on arrow between if3.yes and block4
 
-_________________________________________
-# Contribution
+______________________________________
 
-This project is quite ambitious, and hard for me cuz IDK shit. If you want to contribute, make a PR. This will probably die, but if not, I'll include a link to a hosted version below 👇🏻
+This is quite a daunting project for me, cuz I'm dumb AF. If it works, I'll release it soon. If you wanna help, make a PR. Check the link below for it's status 👇🏻
 
 [KashuChart - Create Flowcharts using Code](https://r.mtdv.me/kashuchart)
