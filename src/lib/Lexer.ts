@@ -131,7 +131,10 @@ const addDefaultProps = (token: Token) => {
     };
   } else {
     newObj.props = {
-      dir: "down",
+      yesDir: "down",
+      noDir: "right",
+      yes: "yes",
+      no: "no",
       ...newObj.props,
     };
   }
@@ -181,12 +184,22 @@ type Token = {
   text: string;
   props: TokenProps;
   name: string;
+  inline?: Link;
+  outline?: Link;
+};
+
+type Link = {
+  from: Token;
+  to: Token;
+  text: string;
+  direction: Direction;
 };
 
 export default class Lexer {
   code: string[];
   state: State = State.ExpectingVariable;
   tokens: Token[] = [];
+  links: any = [];
   currentToken: {
     type?: BlockType;
     text?: string;
@@ -200,14 +213,6 @@ export default class Lexer {
   };
   error: Error | null = null;
 
-  parseCode(code = "") {
-    if (!code) return [];
-    let res = customSplit(code, "\n", "(", ")")
-      .map((str) => str.trim())
-      .filter((str) => str);
-    return res;
-  }
-
   constructor(code = "") {
     this.code = this.parseCode(code);
   }
@@ -216,19 +221,12 @@ export default class Lexer {
     this.code = this.parseCode(code);
   }
 
-  createToken(
-    name: string,
-    text: string,
-    type: string,
-    props: TokenProps
-  ): Token {
-    return {
-      name,
-      text,
-      // @ts-ignore
-      type,
-      props,
-    };
+  parseCode(code = "") {
+    if (!code) return [];
+    let res = customSplit(code, "\n", "(", ")")
+      .map((str) => str.trim())
+      .filter((str) => str);
+    return res;
   }
 
   throwError(err: ErrorType, lineNum: number = -1) {
@@ -242,12 +240,11 @@ export default class Lexer {
     if (this.code.length === 0) return [];
 
     this.tokens = [];
+    this.links = [];
 
     let lineIndex = 0;
 
     for (let line of this.code) {
-      let skip = false;
-
       if (this.state == State.ExpectingVariable) {
         if (line.trim() == "join {") {
           this.state = State.ExpectingJoin;
@@ -348,7 +345,30 @@ export default class Lexer {
           console.log("Ending join");
           break;
         }
-        console.log("Joining");
+        let s1 = customSplit(line, ">", "(", ")");
+
+        let tks = [];
+
+        s1.forEach((x) => {
+          if (x[x.length - 1] === "-") {
+            x = x.slice(0, -1);
+          }
+          if (x.includes("-")) {
+            let s3 = customExtract(x, "(", ")");
+            let name = x[0].concat(customExtract(x, x[0], "-")[0]);
+            tks.push({
+              name,
+              text: s3[0],
+            });
+          } else {
+            tks.push({
+              name: x,
+              text: null,
+            });
+          }
+
+          console.log(tks);
+        });
 
         continue;
       }

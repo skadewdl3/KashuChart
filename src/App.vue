@@ -12,7 +12,7 @@ st = start(Algorithm Starts)
 ed = stop(ALgorithm Stops)
 
 join {
-  st->ed
+  st-(Hello World)->ed
 }
 `)
 
