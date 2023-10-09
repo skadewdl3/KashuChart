@@ -29,9 +29,9 @@ const height = ref(0)
 
 onMounted(() => {
   // @ts-ignore
-  width.value = parseFloat(getComputedStyle(document.querySelector('.code-container')).width.replace('px', ''))
+  width.value = parseFloat(getComputedStyle(document.querySelector('.code-container')).width.replace('px', '')) - 100
   // @ts-ignore
-  height.value = parseFloat(getComputedStyle(document.querySelector('.code-container')).height.replace('px', ''))
+  height.value = parseFloat(getComputedStyle(document.querySelector('.content')).height.replace('px', ''))
   const canvas = new fabric.Canvas(canvasEl.value);
   canvas.setDimensions({
     width: width.value,
@@ -52,18 +52,19 @@ const convert = () => {
 </script>
 
 <template>
-  <div class="hero w-screem min-h-screen bg-base-200">
-    <div class="hero-content text-center w-full h-full grid grid-cols-2">
-      <div class="code-container w-full flex items-center justify-between flex-col">
-        <h1 class="text-5xl my-8 font-bold">KashuChart</h1>
+  <div class="w-screen  h-screen bg-base-200 flex flex-col items-center">
+    <div class="content text-center w-full min-h-full grid grid-cols-[1fr_2fr]">
+      <div class="code-container mx-4 w-full h-full flex items-center justify-between flex-col">
         <textarea
-          class="w-full min-h-[20rem] text-xl textarea my-8 textarea-primary"
+          class="w-full h-full text-xl textarea my-8 textarea-primary"
           v-model="code"
           placeholder="Code"
         ></textarea>
         <button @click="convert" class="btn my-8 btn-primary">Convert!</button>
       </div>
-      <canvas class="fabric-canvas" ref="canvasEl"></canvas>
+      <div class="fcanvas-container mx-4 flex items-center justify-center ">
+        <canvas class="fabric-canvas" ref="canvasEl"></canvas>
+      </div>
     </div>
   </div>
 </template>
