@@ -68,3 +68,7 @@ ______________________________________
 This is quite a daunting project for me, cuz I'm dumb AF. If it works, I'll release it soon. If you wanna help, make a PR. Check the link below for it's status 👇🏻
 
 [KashuChart - Create Flowcharts using Code](https://r.mtdv.me/kashuchart)
+
+
+
+### TOML Syntax - See SYNTAX.toml

@@ -1,0 +1,17 @@
+start.start.text = 'Start'
+proc.step1.text = 'Step 1'
+
+[cond.decision]
+text = 'Decision'
+yesDir = 'down'
+yesText = 'Yes'
+noDir = 'left'
+noText = 'No'
+
+proc.step2.text = 'Step 2'
+stop.end.text = 'End'
+
+join = [
+  'start->step1->decision.yes->end',
+  'decision.no->step1'
+] 
